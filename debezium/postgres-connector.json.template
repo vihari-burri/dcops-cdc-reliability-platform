@@ -1,0 +1,17 @@
+{
+  "name": "maintenance-postgres-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "dcops",
+    "database.password": "${POSTGRES_PASSWORD}",
+    "database.dbname": "maintenance",
+    "topic.prefix": "dcops",
+    "table.include.list": "public.work_orders",
+    "plugin.name": "pgoutput",
+    "slot.name": "dcops_debezium",
+    "publication.autocreate.mode": "filtered",
+    "tombstones.on.delete": "false"
+  }
+}

@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: dcops
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD before starting}
+      POSTGRES_DB: maintenance
+    command: ["postgres", "-c", "wal_level=logical"]
+    ports: ["5432:5432"]
+  redpanda:
+    image: redpandadata/redpanda:v24.2.18
+    command: redpanda start --overprovisioned --smp 1 --memory 512M --reserve-memory 0M --node-id 0 --kafka-addr PLAINTEXT://0.0.0.0:9092 --advertise-kafka-addr PLAINTEXT://redpanda:9092
+  connect:
+    image: debezium/connect:2.7.3.Final
+    environment:
+      BOOTSTRAP_SERVERS: redpanda:9092
+      GROUP_ID: dcops-connect
+      CONFIG_STORAGE_TOPIC: dcops_connect_configs
+      OFFSET_STORAGE_TOPIC: dcops_connect_offsets
+      STATUS_STORAGE_TOPIC: dcops_connect_status
+    ports: ["8083:8083"]
+    depends_on: [postgres, redpanda]
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports: ["9090:9090"]
+  grafana:
+    image: grafana/grafana:11.3.1
+    ports: ["3000:3000"]
+    depends_on: [prometheus]

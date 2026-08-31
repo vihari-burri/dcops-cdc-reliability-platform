@@ -1,0 +1,17 @@
+[project]
+name = "dcops-cdc-reliability-platform"
+version = "1.0.0"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.8", "prometheus-client>=0.20"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+

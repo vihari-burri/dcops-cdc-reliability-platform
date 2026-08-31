@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: dcops-cdc-consumer
+    static_configs:
+      - targets: ["consumer:8000"]
+
